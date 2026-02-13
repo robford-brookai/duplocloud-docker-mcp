@@ -1,0 +1,736 @@
+[
+  {
+    "name": "ecs_service_list",
+    "description": "List all ECS services in a DuploCloud tenant.\n\nArgs:\n    tenant_id: The tenant ID to list ECS services for.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id"
+      ],
+      "title": "ecs_service_listArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "ecs_task_def_list",
+    "description": "List all ECS task definition families in a DuploCloud tenant.\n\nArgs:\n    tenant_id: The tenant ID to list task definitions for.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id"
+      ],
+      "title": "ecs_task_def_listArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "ecs_task_list",
+    "description": "List running ECS tasks for a specific service.\n\nArgs:\n    tenant_id: The tenant ID containing the ECS service.\n    service_name: The ECS service name to list tasks for.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "service_name": {
+          "title": "Service Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "service_name"
+      ],
+      "title": "ecs_task_listArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "ecs_task_run",
+    "description": "Run an ECS task from a task definition family.\n\nArgs:\n    tenant_id: The tenant ID to run the task in.\n    family_name: The task definition family name.\n    replicas: Number of task instances to run. Defaults to 1.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "family_name": {
+          "title": "Family Name",
+          "type": "string"
+        },
+        "replicas": {
+          "default": 1,
+          "title": "Replicas",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "family_name"
+      ],
+      "title": "ecs_task_runArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "ecs_service_update",
+    "description": "Update the image of an ECS service's task definition.\n\nArgs:\n    tenant_id: The tenant ID containing the ECS service.\n    name: The task definition family name.\n    image: The new Docker image to deploy.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "image": {
+          "title": "Image",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name",
+        "image"
+      ],
+      "title": "ecs_service_updateArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "ecs_service_delete",
+    "description": "Delete an ECS service from a DuploCloud tenant.\n\nArgs:\n    tenant_id: The tenant ID containing the ECS service.\n    name: The ECS service name to delete.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name"
+      ],
+      "title": "ecs_service_deleteArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "database_list",
+    "description": "List all RDS database instances in a DuploCloud tenant.\n\nArgs:\n    tenant_id: The tenant ID to list databases for.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id"
+      ],
+      "title": "database_listArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "database_get",
+    "description": "Get details of a specific RDS database instance.\n\nArgs:\n    tenant_id: The tenant ID containing the database.\n    name: The database instance identifier.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name"
+      ],
+      "title": "database_getArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "database_create",
+    "description": "Create a new RDS database instance in a DuploCloud tenant.\n\nArgs:\n    tenant_id: The tenant ID to create the database in.\n    identifier: The database instance identifier.\n    engine: Database engine (e.g. mysql, postgres, mariadb).\n    size: Instance class (e.g. db.t3.micro).\n    master_username: Master database username. Defaults to 'master'.\n    master_password: Master database password. Required for most engines.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "identifier": {
+          "title": "Identifier",
+          "type": "string"
+        },
+        "engine": {
+          "title": "Engine",
+          "type": "string"
+        },
+        "size": {
+          "title": "Size",
+          "type": "string"
+        },
+        "master_username": {
+          "default": "master",
+          "title": "Master Username",
+          "type": "string"
+        },
+        "master_password": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Master Password"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "identifier",
+        "engine",
+        "size"
+      ],
+      "title": "database_createArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "database_update",
+    "description": "Update an RDS database instance. Currently supports resizing.\n\nArgs:\n    tenant_id: The tenant ID containing the database.\n    name: The database instance identifier.\n    size: New instance class (e.g. db.t3.small).\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "size": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Size"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name"
+      ],
+      "title": "database_updateArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "database_delete",
+    "description": "Delete an RDS database instance from a DuploCloud tenant.\n\nArgs:\n    tenant_id: The tenant ID containing the database.\n    name: The database instance identifier to delete.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name"
+      ],
+      "title": "database_deleteArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "host_list",
+    "description": "List all hosts (virtual machines) in a DuploCloud tenant.\n\nArgs:\n    tenant_id: The tenant ID to list hosts for.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id"
+      ],
+      "title": "host_listArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "host_get",
+    "description": "Get details of a specific host by name.\n\nArgs:\n    tenant_id: The tenant ID containing the host.\n    name: The host name to look up.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name"
+      ],
+      "title": "host_getArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "host_create",
+    "description": "Create a new host (VM) in a DuploCloud tenant.\n\nArgs:\n    tenant_id: The tenant ID to create the host in.\n    friendly_name: A friendly name for the host.\n    capacity: The instance type/size (e.g. t3.medium).\n    agent_platform: The agent platform type. 0=Linux Docker, 7=EKS Linux. Defaults to 0.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "friendly_name": {
+          "title": "Friendly Name",
+          "type": "string"
+        },
+        "capacity": {
+          "title": "Capacity",
+          "type": "string"
+        },
+        "agent_platform": {
+          "default": 0,
+          "title": "Agent Platform",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "friendly_name",
+        "capacity"
+      ],
+      "title": "host_createArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "host_delete",
+    "description": "Terminate a host in a DuploCloud tenant.\n\nArgs:\n    tenant_id: The tenant ID containing the host.\n    name: The host name to delete.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name"
+      ],
+      "title": "host_deleteArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "host_reboot",
+    "description": "Reboot a host in a DuploCloud tenant.\n\nArgs:\n    tenant_id: The tenant ID containing the host.\n    name: The host name to reboot.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name"
+      ],
+      "title": "host_rebootArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "service_list",
+    "description": "List all services in a DuploCloud tenant.\n\nArgs:\n    tenant_id: The tenant ID to list services for.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id"
+      ],
+      "title": "service_listArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "service_get",
+    "description": "Get details of a specific service by name.\n\nArgs:\n    tenant_id: The tenant ID containing the service.\n    name: The service name to look up.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name"
+      ],
+      "title": "service_getArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "service_create",
+    "description": "Create a new service in a DuploCloud tenant.\n\nArgs:\n    tenant_id: The tenant ID to create the service in.\n    name: Name for the new service.\n    image: Docker image to deploy (e.g. nginx:latest).\n    replicas: Number of replicas to run. Defaults to 1.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "image": {
+          "title": "Image",
+          "type": "string"
+        },
+        "replicas": {
+          "default": 1,
+          "title": "Replicas",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name",
+        "image"
+      ],
+      "title": "service_createArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "service_update",
+    "description": "Update an existing service. Provide only the fields to change.\n\nArgs:\n    tenant_id: The tenant ID containing the service.\n    name: The service name to update.\n    image: New Docker image (optional).\n    replicas: New replica count (optional).\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "image": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Image"
+        },
+        "replicas": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Replicas"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name"
+      ],
+      "title": "service_updateArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "service_delete",
+    "description": "Delete a service from a DuploCloud tenant.\n\nArgs:\n    tenant_id: The tenant ID containing the service.\n    name: The service name to delete.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name"
+      ],
+      "title": "service_deleteArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "service_restart",
+    "description": "Restart a service, triggering a rolling redeployment.\n\nArgs:\n    tenant_id: The tenant ID containing the service.\n    name: The service name to restart.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name"
+      ],
+      "title": "service_restartArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "bucket_list",
+    "description": "List all S3 buckets in a DuploCloud tenant.\n\nArgs:\n    tenant_id: The tenant ID to list buckets for.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id"
+      ],
+      "title": "bucket_listArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "bucket_get",
+    "description": "Get details of a specific S3 bucket.\n\nArgs:\n    tenant_id: The tenant ID containing the bucket.\n    name: The bucket name to look up.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name"
+      ],
+      "title": "bucket_getArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "bucket_create",
+    "description": "Create a new S3 bucket in a DuploCloud tenant.\n\nArgs:\n    tenant_id: The tenant ID to create the bucket in.\n    name: Name for the new bucket.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name"
+      ],
+      "title": "bucket_createArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "bucket_update",
+    "description": "Update an S3 bucket configuration.\n\nArgs:\n    tenant_id: The tenant ID containing the bucket.\n    name: The bucket name to update.\n    versioning: Enable or disable versioning (optional).\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "versioning": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Versioning"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name"
+      ],
+      "title": "bucket_updateArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "bucket_delete",
+    "description": "Delete an S3 bucket from a DuploCloud tenant.\n\nArgs:\n    tenant_id: The tenant ID containing the bucket.\n    name: The bucket name to delete.\n",
+    "inputSchema": {
+      "properties": {
+        "tenant_id": {
+          "title": "Tenant Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "tenant_id",
+        "name"
+      ],
+      "title": "bucket_deleteArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "tenant_list",
+    "description": "List all tenants accessible in the DuploCloud portal.",
+    "inputSchema": {
+      "properties": {},
+      "title": "tenant_listArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "tenant_get",
+    "description": "Get details of a specific DuploCloud tenant by name.\n\nArgs:\n    name: The tenant name to look up.\n",
+    "inputSchema": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "tenant_getArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "tenant_create",
+    "description": "Create a new DuploCloud tenant.\n\nArgs:\n    account_name: Name for the new tenant.\n    plan_id: The infrastructure plan ID to associate with.\n",
+    "inputSchema": {
+      "properties": {
+        "account_name": {
+          "title": "Account Name",
+          "type": "string"
+        },
+        "plan_id": {
+          "title": "Plan Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "account_name",
+        "plan_id"
+      ],
+      "title": "tenant_createArguments",
+      "type": "object"
+    }
+  },
+  {
+    "name": "tenant_delete",
+    "description": "Delete a DuploCloud tenant by name.\n\nArgs:\n    name: The tenant name to delete.\n",
+    "inputSchema": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "tenant_deleteArguments",
+      "type": "object"
+    }
+  }
+]

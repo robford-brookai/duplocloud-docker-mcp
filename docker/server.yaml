@@ -1,0 +1,22 @@
+name: duplocloud
+description: DuploCloud infrastructure management MCP server — manage tenants, services, hosts, databases, S3 buckets, and ECS containers
+category: devops
+tags:
+  - infrastructure
+  - cloud
+  - duplocloud
+  - aws
+  - kubernetes
+
+secrets:
+  - name: DUPLO_TOKEN
+    description: DuploCloud API token for authentication
+    required: true
+
+env:
+  - name: DUPLO_HOST
+    description: DuploCloud portal URL (e.g. https://your-company.duplocloud.net)
+    required: true
+  - name: DUPLO_TENANT
+    description: Default DuploCloud tenant name (optional, can be specified per-tool)
+    required: false
