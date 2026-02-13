@@ -1,0 +1,165 @@
+version: "3"
+
+vars:
+  IMAGE_NAME: duplocloud-mcp
+  IMAGE_TAG: latest
+  DOCKER_MCP_NAME: duplocloud-mcp
+
+dotenv: [".env"]
+
+tasks:
+  # ─── Setup ───────────────────────────────────────────────────────────
+  setup:
+    desc: Install all dependencies (including dev)
+    cmds:
+      - uv sync
+
+  # ─── Run ─────────────────────────────────────────────────────────────
+  run:
+    desc: Run MCP server locally via stdio transport
+    cmds:
+      - uv run main.py
+
+  # ─── Lint & Format ───────────────────────────────────────────────────
+  lint:
+    desc: Run ruff linter
+    cmds:
+      - uv run ruff check .
+
+  lint:fix:
+    desc: Run ruff linter with auto-fix
+    cmds:
+      - uv run ruff check . --fix
+
+  format:
+    desc: Run ruff formatter
+    cmds:
+      - uv run ruff format .
+
+  format:check:
+    desc: Check formatting without modifying files
+    cmds:
+      - uv run ruff format --check .
+
+  # ─── Testing ─────────────────────────────────────────────────────────
+  test:
+    desc: Run all tests
+    cmds:
+      - uv run pytest
+
+  test:v:
+    desc: Run all tests with verbose output
+    cmds:
+      - uv run pytest -v
+
+  test:cov:
+    desc: Run tests with coverage report
+    cmds:
+      - uv run pytest --cov=duplocloud_mcp --cov-report=term-missing
+
+  test:cov:html:
+    desc: Run tests with HTML coverage report
+    cmds:
+      - uv run pytest --cov=duplocloud_mcp --cov-report=html
+      - echo "Coverage report at htmlcov/index.html"
+
+  test:one:
+    desc: Run a single test (pass TEST var, e.g. task test:one TEST=tests/test_client.py::test_get_client_success)
+    cmds:
+      - uv run pytest {{.TEST}} -v
+    requires:
+      vars: [TEST]
+
+  test:tools:
+    desc: Run only tool tests
+    cmds:
+      - uv run pytest tests/test_tools/ -v
+
+  # ─── Docker ──────────────────────────────────────────────────────────
+  docker:build:
+    desc: Build Docker image
+    cmds:
+      - docker build -f docker/Dockerfile -t {{.IMAGE_NAME}}:{{.IMAGE_TAG}} .
+
+  docker:run:
+    desc: Run MCP server in Docker container
+    cmds:
+      - >-
+        docker run -i --rm
+        -e DUPLO_HOST=${DUPLO_HOST}
+        -e DUPLO_TOKEN=${DUPLO_TOKEN}
+        {{if .DUPLO_TENANT}}-e DUPLO_TENANT={{.DUPLO_TENANT}}{{end}}
+        {{.IMAGE_NAME}}:{{.IMAGE_TAG}}
+    preconditions:
+      - sh: test -n "$DUPLO_HOST"
+        msg: "DUPLO_HOST is not set. See .env.example"
+      - sh: test -n "$DUPLO_TOKEN"
+        msg: "DUPLO_TOKEN is not set. See .env.example"
+
+  docker:shell:
+    desc: Open a shell in the Docker container (for debugging)
+    cmds:
+      - docker run -it --rm --entrypoint /bin/bash {{.IMAGE_NAME}}:{{.IMAGE_TAG}}
+
+  # ─── Docker MCP Toolkit ─────────────────────────────────────────────
+  mcp:add:
+    desc: Register server with Docker MCP Toolkit
+    cmds:
+      - docker mcp server add {{.DOCKER_MCP_NAME}}
+
+  mcp:remove:
+    desc: Unregister server from Docker MCP Toolkit
+    cmds:
+      - docker mcp server remove {{.DOCKER_MCP_NAME}}
+
+  mcp:list:
+    desc: List all registered Docker MCP servers
+    cmds:
+      - docker mcp server list
+
+  mcp:gateway:
+    desc: Start the Docker MCP gateway
+    cmds:
+      - docker mcp gateway run
+
+  # ─── Tools Manifest ─────────────────────────────────────────────────
+  tools:json:
+    desc: Regenerate docker/tools.json from the running server
+    cmds:
+      - >-
+        uv run python -c "
+        import json
+        from duplocloud_mcp.server import mcp
+        tools = mcp.list_tools()
+        print(json.dumps([t.model_dump(exclude_none=True) for t in tools], indent=2))
+        " > docker/tools.json
+      - echo "Wrote docker/tools.json"
+
+  # ─── CI / Quality Gate ──────────────────────────────────────────────
+  check:
+    desc: Run all quality checks (lint + format check + tests with coverage)
+    cmds:
+      - task: lint
+      - task: format:check
+      - task: test:cov
+
+  ci:
+    desc: CI pipeline — same as check but fails fast
+    cmds:
+      - uv run ruff check .
+      - uv run ruff format --check .
+      - uv run pytest --cov=duplocloud_mcp --cov-report=term-missing -x
+
+  # ─── Clean ───────────────────────────────────────────────────────────
+  clean:
+    desc: Remove build artifacts and caches
+    cmds:
+      - rm -rf .pytest_cache htmlcov .coverage .ruff_cache __pycache__
+      - find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
+      - echo "Cleaned"
+
+  clean:docker:
+    desc: Remove Docker image
+    cmds:
+      - docker rmi {{.IMAGE_NAME}}:{{.IMAGE_TAG}} 2>/dev/null || true
+      - echo "Removed {{.IMAGE_NAME}}:{{.IMAGE_TAG}}"
