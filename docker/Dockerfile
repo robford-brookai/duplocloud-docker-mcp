@@ -3,7 +3,7 @@ FROM python:3.13-slim AS builder
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 WORKDIR /app
-COPY pyproject.toml .
+COPY pyproject.toml uv.lock ./
 COPY main.py .
 COPY duplocloud_mcp/ duplocloud_mcp/
 
